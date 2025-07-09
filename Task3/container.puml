@@ -1,0 +1,45 @@
+@startuml
+title C4 Диаграмма контекста MVP по депозитам
+top to bottom direction
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+skinparam linetype ortho
+
+Person_Ext(user, "Клиент", "Пользователь интернет-банка и сайта")
+Person(operator, "Оператор", "Сотрудник собственного кол-центра")
+Person(manager, "Менеджер", "Сотрудник фронт-офиса")
+
+Container(site, "Сайт банка", "Маркетинговые материалы по депозитам")
+Container(ib, "Интернет-банк", "NET Framework", "Управление своими депозитами")
+ContainerDb(ib_db, "БД интернет-банка", "Хранение данных по депозитам и пользователям")
+Container(abs, "АБС", ".NET", "Вся магия")
+ContainerDb(abs_db, "БД АБС")
+Container(call_center, "Кол-центр", "Java", "Пинг клиентов")
+ContainerDb(call_center_db, "БД кол-центра", "Заявки на депозиты")
+System(sms, "СМС-шлюз", "Digital-уведомления")
+System_Ext(telecom, "Телеком оператор", "Пересылка СМС")
+ContainerQueue(kafka, "Шина сообщений", "Apache Kafka") #crimson
+ContainerQueue(redis, "Кэш", "Redis") #Orange
+
+Rel(user, site, "Просмотр условий по депозитам")
+Rel(user, ib, "Подтверждение открытия депозита")
+Rel(site, kafka, "Уведомление о клиенте")
+Rel(call_center, kafka, "")
+Rel(operator, call_center, "Подтверждение данных клиента")
+Rel(call_center, user, "Подтверждение данных")
+Rel(abs, abs_db, "")
+Rel(call_center, call_center_db, "")
+Rel(ib, ib_db, "")
+Rel(manager, abs, "Создание депозита")
+Rel(sms, kafka, "Уведомление клиента / OTP")
+Rel(sms, telecom, "Отправка СМС")
+Rel(ib, kafka, "")
+Rel(abs, kafka, "")
+Rel(telecom, user, "")
+Rel(ib, redis, "")
+Rel(abs, redis, "")
+Rel(call_center, redis, "")
+Rel(site, redis, "")
+
+
+
+@enduml
