@@ -1,17 +1,7 @@
-<style>
-    .heatMap th {
-        background: grey;
-        word-wrap: break-word;
-        text-align: center;
-    }
-</style>
-
 ### <a name="_b7urdng99y53"></a>**Название задачи:Передача ставок в кол-центр**
 ### <a name="_hjk0fkfyohdk"></a>**Автор: Леонид Смирнов**
 ### <a name="_uanumrh8zrui"></a>**Дата: 09.07.2025**
 ### <a name="_3bfxc9a45514"></a>**Функциональные требования**
-
-<div class="heatMap">
 
 Опишите здесь верхнеуровневые Use Cases. Их нужно оформить в виде таблицы с пошаговым описанием:
 
@@ -32,8 +22,6 @@
 |   3   | Данные должны быть актуальными |
 
 
-
-</div>
 ### <a name="_qmphm5d6rvi3"></a>**Решение**
 
 [Контекст](./context.puml)
