@@ -1,0 +1,25 @@
+@startuml
+title C4 Диаграмма контекста MVP по депозитам
+top to bottom direction
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+skinparam linetype ortho
+
+Container(abs, "АБС", ".NET", "Вся магия")
+Container(notification, "Сервис уведомлений", ".NET", "Рассылает письма, СМС и пуши")
+System(mail, "Почтовый сервис")
+System_Ext(call_center_ext, "Партнерский кол-центр")
+Container(call_center, "Кол-центр", "Java", "Пинг клиентов")
+ContainerDb(call_center_db, "БД кол-центра", "Текущие ставки")
+ContainerQueue(kafka, "Шина сообщений", "Apache Kafka") #crimson
+ContainerQueue(redis, "Кэш", "Redis") #Orange
+
+Rel(call_center, kafka, "Слушает актуальные ставки")
+Rel(call_center, redis, "Кэширует актуальные ставки")
+Rel(call_center, call_center_db, "Хранение информации о ставках")
+Rel(abs, kafka, "Публикует актуальные ставки")
+Rel(notification, kafka, "Слушает актуальные ставки")
+Rel(abs, redis, "Кэширует актуальные ставки для REST API")
+Rel(notification, mail, "Отсылает файл со ставками в партнерскую систему")
+Rel(mail, call_center_ext, "Пересылка ставок во вложении к письму")
+
+@enduml

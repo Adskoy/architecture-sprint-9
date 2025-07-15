@@ -1,0 +1,15 @@
+@startuml
+title C4 Диаграмма контекста MVP по депозитам
+top to bottom direction
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+skinparam linetype ortho
+
+
+System(call, "ПО кол-центра", "")
+System_Ext(call_ext, "ПО партнерского кол-центра", "")
+Container(abs, "АБС", ".NET", "Публикация ставок по депозитам")
+
+Rel(abs, call, "Публикация актуальных ставок по депозитам")
+Rel(abs, call_ext, "Публикация актуальных ставок по депозитам")
+
+@enduml

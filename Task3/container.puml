@@ -1,0 +1,61 @@
+@startuml
+title C4 Диаграмма контекста MVP по депозитам
+top to bottom direction
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+skinparam linetype ortho
+
+Person_Ext(user, "Клиент", "Пользователь интернет-банка и сайта")
+
+System_Boundary(bank, "Банк Стандарт") {
+    System(ib, "Интернет-банк", ".NET", "Управление своими депозитами")
+    System(abs, "АБС", ".NET", "Финансовые операции")
+
+    Person(operator, "Оператор", "Сотрудник собственного кол-центра")
+    Person(manager, "Менеджер", "Сотрудник фронт-офиса")
+
+    Container(site, "Сайт банка", "Маркетинговые материалы по депозитам")
+    Container(ib, "Интернет-банк", "NET Framework", "Управление своими депозитами")
+    ContainerDb(ib_db, "БД интернет-банка", "Хранение данных по депозитам и пользователям")
+    Container(abs, "АБС", ".NET", "Вся магия")
+    ContainerDb(abs_db, "БД АБС")
+    Container(call_center, "Кол-центр", "Java", "Пинг клиентов")
+    ContainerDb(call_center_db, "БД кол-центра", "Заявки на депозиты")
+    Container(notifications, "Сервис уведомлений", ".NET/C#", "Digital-уведомления")
+    ContainerDb(notifications_db, "БД уведомлений", "Хранение уведомлений (письма/смс/пуши)")
+    ContainerQueue(kafka, "Шина сообщений", "Apache Kafka") #crimson
+    ContainerQueue(redis, "Кэш", "Redis") #Orange
+    System(mail, "Почтовый сервис", "Exchange")
+}
+
+    System_Ext(sms, "СМС-шлюз", "Digital-уведомления")
+    System_Ext(telecom, "Телеком оператор", "Пересылка СМС")
+
+
+Rel(user, site, "Просмотр условий по депозитам", "REST")
+Rel(user, ib, "Подтверждение открытия депозита", "REST")
+Rel(site, kafka, "Публикация заявки на депозит")
+Rel(call_center, kafka, "Публикация заявок на депозиты")
+Rel(operator, call_center, "Подтверждение данных клиента", "REST")
+Rel(call_center, user, "Подтверждение данных")
+Rel(abs, abs_db, "Хранение финансовых операций")
+Rel(call_center, call_center_db, "")
+Rel(ib, ib_db, "")
+Rel(manager, abs, "Создание депозита", "REST")
+Rel(notifications, mail, "Отправка email уведомлений", "SMTP")
+Rel(notifications, kafka, "Чтение событий на уведомление")
+Rel(notifications, notifications_db, "Хранение уведомлений")
+Rel(notifications, sms, "Создание СМС", "REST/SOAP")
+Rel(sms, telecom, "Отправка СМС", "SMPP")
+Rel(ib, kafka, "Публикация заявки на депозит")
+Rel(abs, kafka, "Чтение и запись события по депозитам и ставкам")
+Rel(telecom, user, "Уведомление об операции с депозитом")
+Rel(mail, user, "Уведомление об операции с депозитом", "SMTP")
+Rel(mail, manager, "Уведомление о заявке на депозит", "SMTP")
+Rel(ib, redis, "Кэширование состояния ЛК клиента")
+Rel(abs, redis, "Кэширование ставок по депозитам и прочей оперативки")
+Rel(call_center, redis, "Кэширование оперативной информации")
+Rel(site, redis, "Кэширование ставок")
+
+
+
+@enduml
