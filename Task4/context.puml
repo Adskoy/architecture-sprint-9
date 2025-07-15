@@ -4,18 +4,12 @@ top to bottom direction
 !includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 skinparam linetype ortho
 
-Person_Ext(user, "Клиент", "Пользователь интернет-банка и сайта")
-Person(operator, "Оператор", "Оператор внутреннего кол-центра")
-Person_Ext(operator_ext, "Оператор", "Оператор партнерского кол-центра")
 
 System(call, "ПО кол-центра", "")
 System_Ext(call_ext, "ПО партнерского кол-центра", "")
+Container(abs, "АБС", ".NET", "Публикация ставок по депозитам")
 
-Rel(user, operator, "Запрос информации о ставках")
-Rel(user, operator_ext, "Запрос информации о ставках")
-
-Rel(operator, call, "Запрос информации о ставках")
-Rel(operator_ext, call_ext, "Запрос информации о ставках")
-
+Rel(abs, call, "Публикация актуальных ставок по депозитам")
+Rel(abs, call_ext, "Публикация актуальных ставок по депозитам")
 
 @enduml

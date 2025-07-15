@@ -4,12 +4,8 @@ top to bottom direction
 !includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 skinparam linetype ortho
 
-Person_Ext(user, "Клиент", "Пользователь интернет-банка и сайта")
-Person_Ext(operator_ext, "Оператор", "Сотрудник партнерского кол-центра")
-Person(operator, "Оператор", "Сотрудник собственного кол-центра")
-
 Container(abs, "АБС", ".NET", "Вся магия")
-ContainerDb(abs_db, "БД АБС")
+Container(notification, "Сервис уведомлений", ".NET", "Рассылает письма, СМС и пуши")
 System(mail, "Почтовый сервис")
 System_Ext(call_center_ext, "Партнерский кол-центр")
 Container(call_center, "Кол-центр", "Java", "Пинг клиентов")
@@ -17,17 +13,13 @@ ContainerDb(call_center_db, "БД кол-центра", "Текущие став
 ContainerQueue(kafka, "Шина сообщений", "Apache Kafka") #crimson
 ContainerQueue(redis, "Кэш", "Redis") #Orange
 
-Rel(user, operator, "Запрос ставок")
-Rel(user, operator_ext, "Запрос ставок")
-Rel(operator_ext, call_center_ext, "Запрос ставок")
-Rel(operator, call_center, "Запрос ставок")
-Rel(call_center, kafka, "")
-Rel(call_center, redis, "")
+Rel(call_center, kafka, "Слушает актуальные ставки")
+Rel(call_center, redis, "Кэширует актуальные ставки")
 Rel(call_center, call_center_db, "Хранение информации о ставках")
-Rel(abs, abs_db, "")
-Rel(abs, kafka, "")
-Rel(abs, redis, "")
-Rel(abs, mail, "")
-Rel(mail, call_center_ext, "Пересылка ставок")
+Rel(abs, kafka, "Публикует актуальные ставки")
+Rel(notification, kafka, "Слушает актуальные ставки")
+Rel(abs, redis, "Кэширует актуальные ставки для REST API")
+Rel(notification, mail, "Отсылает файл со ставками в партнерскую систему")
+Rel(mail, call_center_ext, "Пересылка ставок во вложении к письму")
 
 @enduml
